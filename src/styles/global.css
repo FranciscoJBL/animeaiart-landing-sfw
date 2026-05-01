@@ -105,25 +105,12 @@ img {
   letter-spacing: 0;
 }
 
-.brand-mark {
+.brand-logo {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background:
-    linear-gradient(135deg, var(--primary), #6d5dfc 48%, var(--accent));
+  object-fit: cover;
   box-shadow: 0 14px 30px color-mix(in srgb, var(--primary) 28%, transparent);
-  position: relative;
-}
-
-.brand-mark::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  right: 7px;
-  top: 7px;
-  border-radius: 999px;
-  background: var(--warm);
 }
 
 .desktop-nav {

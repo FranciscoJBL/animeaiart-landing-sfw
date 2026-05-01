@@ -24,7 +24,8 @@ const {
 const copy = t[lang];
 const nav = getNav(lang);
 const canonical = new URL(path, SITE_URL).toString();
-const socialImage = new URL(image, SITE_URL).toString();
+const socialImage = new URL("/brand/og-logo.jpg", SITE_URL).toString();
+const brandLogo = new URL("/brand/logo-512.png", SITE_URL).toString();
 const appHref = `${APP_URL}/auth/signin?source=creators`;
 const jsonLd = {
   "@context": "https://schema.org",
@@ -35,6 +36,11 @@ const jsonLd = {
   operatingSystem: "Web",
   description,
   image: socialImage,
+  brand: {
+    "@type": "Brand",
+    name: copy.brand,
+    logo: brandLogo,
+  },
   offers: {
     "@type": "AggregateOffer",
     lowPrice: "0",
@@ -55,7 +61,10 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
     <title>{title}</title>
@@ -102,7 +111,7 @@ const jsonLd = {
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N4J3RJBS" height="0" width="0" class="gtm-frame"></iframe></noscript>
     <header class="site-header">
       <a class="brand" href={localePath(lang, "home")} aria-label={`${copy.brand} home`}>
-        <span class="brand-mark"></span>
+        <img src="/brand/logo-rounded-512.png" alt={`${copy.brand} logo`} class="brand-logo" width="34" height="34" />
         <span>{copy.brand}</span>
       </a>
       <nav class="desktop-nav" aria-label="Main navigation">
@@ -121,7 +130,7 @@ const jsonLd = {
     <footer class="footer">
       <div>
         <a class="brand footer-brand" href={localePath(lang, "home")}>
-          <span class="brand-mark"></span>
+          <img src="/brand/logo-rounded-512.png" alt={`${copy.brand} logo`} class="brand-logo" width="34" height="34" />
           <span>{copy.brand}</span>
         </a>
         <p>{copy.footer}</p>
