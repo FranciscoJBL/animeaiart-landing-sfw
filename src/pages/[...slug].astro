@@ -1,0 +1,24 @@
+---
+import CreatorPage from "../components/CreatorPage.astro";
+import { languages, pageSlugs, pageForPath, type Lang, type PageKey } from "../data/i18n";
+
+export function getStaticPaths() {
+  const paths: Array<{ params: { slug: string }; props: { lang: Lang; page: PageKey } }> = [];
+  for (const lang of languages.filter((item) => item !== "en")) {
+    for (const [page, slug] of Object.entries(pageSlugs[lang]) as Array<[PageKey, string]>) {
+      paths.push({
+        params: { slug: [lang, slug].filter(Boolean).join("/") },
+        props: { lang, page },
+      });
+    }
+  }
+  return paths;
+}
+
+const resolved = pageForPath(Astro.params.slug);
+if (!resolved) {
+  return Astro.redirect("/");
+}
+const { lang, page } = Astro.props;
+---
+<CreatorPage lang={lang} page={page} />

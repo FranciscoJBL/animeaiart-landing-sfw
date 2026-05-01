@@ -1,0 +1,301 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { APP_URL, SITE_URL } from "../data/site";
+import { localePath, t, type Lang, type PageKey } from "../data/i18n";
+
+interface Props {
+  lang: Lang;
+  page: PageKey;
+}
+
+const { lang, page } = Astro.props;
+const copy = t[lang];
+const appHref = `${APP_URL}/auth/signin?source=creators_${page}_${lang}`;
+const path = localePath(lang, page);
+const pageMeta = page === "home" ? copy.home : copy.pages[page];
+const title = pageMeta.title;
+const description = pageMeta.description;
+const jsonFaq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: copy.faqs.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
+const jsonGallery = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: page === "gallery" ? copy.pages.gallery.h1 : copy.brand,
+  url: new URL(path, SITE_URL).toString(),
+  image: copy.images.map((image) => ({
+    "@type": "ImageObject",
+    url: new URL(image.src, SITE_URL).toString(),
+    caption: image.alt,
+  })),
+};
+---
+
+{page === "home" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path}>
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">{copy.home.eyebrow}</p>
+          <h1>{copy.home.h1}</h1>
+          <p class="lead">{copy.home.lead}</p>
+          <div class="hero-actions">
+            <a class="primary-button" href={appHref} data-cta="hero">{copy.home.primary}</a>
+            <a class="secondary-button" href={localePath(lang, "gallery")}>{copy.home.secondary}</a>
+          </div>
+          <div class="trust-row" aria-label="Product highlights">
+            {copy.home.trust.map((item) => <span>{item}</span>)}
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Creator anime examples">
+          <img src="/images/creator-gallery/creator-digital-mural.webp" alt="Creator painting a digital anime mural" width="1216" height="832" loading="eager" fetchpriority="high" />
+          <img src="/images/creator-gallery/creator-mage-bridge.webp" alt="Fantasy mage casting a protective spell" width="1216" height="832" loading="eager" />
+          <img src="/images/creator-gallery/creator-production-review.webp" alt="Creators reviewing character sheets" width="1216" height="832" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.recapEyebrow}</p>
+        <h2>{copy.home.recapTitle}</h2>
+        <div class="quick-grid">
+          {copy.home.recap.map(([heading, body]) => (
+            <article class="info-card"><h3>{heading}</h3><p>{body}</p></article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.workflowEyebrow}</p>
+        <h2>{copy.home.workflowTitle}</h2>
+        <div class="workflow-grid">
+          {copy.home.workflows.map(([heading, body]) => (
+            <article class="info-card"><h3>{heading}</h3><p>{body}</p></article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.galleryEyebrow}</p>
+        <h2>{copy.home.galleryTitle}</h2>
+        <p class="lead">{copy.home.galleryLead}</p>
+        <div class="gallery-grid">
+          {copy.images.slice(0, 9).map((image, index) => (
+            <a class:list={["gallery-card", index === 0 && "large"]} href={localePath(lang, "gallery")}>
+              <img src={image.src} alt={image.alt} width="1216" height="832" loading={index < 3 ? "eager" : "lazy"} />
+              <span>{image.categoryLabel[lang]}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner split">
+        <div>
+          <p class="eyebrow">{copy.home.howEyebrow}</p>
+          <h2>{copy.home.howTitle}</h2>
+          <p class="lead">{copy.home.howLead}</p>
+          <div class="steps">
+            {copy.home.steps.map(([number, heading, body]) => (
+              <div class="step"><strong>{number}</strong><div><h3>{heading}</h3><p>{body}</p></div></div>
+            ))}
+          </div>
+        </div>
+        <img src="/images/creator-gallery/creator-storyboard-desk.webp" alt="Creator storyboarding an anime scene" width="1216" height="832" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner split">
+        <img src="/images/creator-gallery/creator-hologram-lab.webp" alt="Researchers examining a holographic map" width="1216" height="832" loading="lazy" />
+        <div>
+          <p class="eyebrow">{copy.home.characterEyebrow}</p>
+          <h2>{copy.home.characterTitle}</h2>
+          <p class="lead">{copy.home.characterLead}</p>
+          <div class="hero-actions">
+            <a class="primary-button" href={localePath(lang, "characters")}>{copy.nav.characters}</a>
+            <a class="secondary-button" href={appHref} data-cta="character">{copy.nav.cta}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.promptsEyebrow}</p>
+        <h2>{copy.home.promptsTitle}</h2>
+        <div class="prompt-grid">
+          {copy.prompts.slice(0, 4).map((prompt) => <article class="prompt-card"><code>{prompt}</code></article>)}
+        </div>
+        <div class="hero-actions" style="margin-top: 1.5rem;"><a class="secondary-button" href={localePath(lang, "prompts")}>{copy.nav.prompts}</a></div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.pricingEyebrow}</p>
+        <h2>{copy.home.pricingTitle}</h2>
+        <div class="plan-grid">
+          {copy.plans.map((plan) => (
+            <article class="plan-card"><h3>{plan.name}</h3><p><strong>{plan.price}</strong></p><p>{plan.credits}</p><p>{plan.characters}</p><p>{plan.note}</p></article>
+          ))}
+        </div>
+        <div class="hero-actions" style="margin-top: 1.5rem;">
+          <a class="primary-button" href={appHref} data-cta="pricing">{copy.nav.cta}</a>
+          <a class="secondary-button" href={localePath(lang, "pricing")}>{copy.nav.pricing}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <div class="section-inner">
+        <div>
+          <p class="eyebrow">{copy.home.ctaEyebrow}</p>
+          <h2>{copy.home.ctaTitle}</h2>
+          <p>{copy.home.ctaLead}</p>
+        </div>
+        <a class="primary-button" href={appHref} data-cta="bottom">{copy.home.ctaButton}</a>
+      </div>
+    </section>
+  </Layout>
+)}
+
+{page === "gallery" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path} image="/images/creator-gallery/creator-production-review.webp">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonGallery)} />
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.galleryEyebrow}</p>
+        <h1>{copy.pages.gallery.h1}</h1>
+        <p class="lead">{copy.pages.gallery.lead}</p>
+        <div class="hero-actions">
+          <a class="primary-button" href={appHref} data-cta="gallery">{copy.pages.gallery.primary}</a>
+          <a class="secondary-button" href={localePath(lang, "prompts")}>{copy.pages.gallery.secondary}</a>
+        </div>
+        <div class="gallery-grid">
+          {copy.images.map((image, index) => (
+            <article class:list={["gallery-card", index === 0 && "large"]}>
+              <img src={image.src} alt={image.alt} width="1216" height="832" loading={index < 4 ? "eager" : "lazy"} />
+              <span>{image.categoryLabel[lang]}</span>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </Layout>
+)}
+
+{page === "prompts" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path}>
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.nav.prompts}</p>
+        <h1>{copy.pages.prompts.h1}</h1>
+        <p class="lead">{copy.pages.prompts.lead}</p>
+        <div class="quick-grid">
+          {copy.pages.prompts.anatomy.map(([heading, body]) => <article class="info-card"><h3>{heading}</h3><p>{body}</p></article>)}
+        </div>
+      </div>
+    </section>
+    <section class="section alt">
+      <div class="section-inner">
+        {[0, 2, 4, 7].map((start, index) => (
+          <div style="margin-bottom: 2rem;">
+            <p class="eyebrow">{copy.pages.prompts.groups[index]}</p>
+            <div class="prompt-grid">
+              {copy.prompts.slice(start, index === 3 ? undefined : [2, 4, 7][index]).map((prompt) => <article class="prompt-card"><code>{prompt}</code></article>)}
+            </div>
+          </div>
+        ))}
+        <div class="hero-actions"><a class="primary-button" href={appHref} data-cta="prompt_examples">{copy.pages.prompts.cta}</a></div>
+      </div>
+    </section>
+  </Layout>
+)}
+
+{page === "characters" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path} image="/images/creator-gallery/creator-hologram-lab.webp">
+    <section class="section">
+      <div class="section-inner split">
+        <div>
+          <p class="eyebrow">{copy.home.characterEyebrow}</p>
+          <h1>{copy.pages.characters.h1}</h1>
+          <p class="lead">{copy.pages.characters.lead}</p>
+          <div class="hero-actions"><a class="primary-button" href={appHref} data-cta="character_page">{copy.pages.characters.primary}</a><a class="secondary-button" href={localePath(lang, "pricing")}>{copy.pages.characters.secondary}</a></div>
+        </div>
+        <img src="/images/creator-gallery/creator-hologram-lab.webp" alt="Creators reviewing a holographic visual reference" width="1216" height="832" loading="eager" />
+      </div>
+    </section>
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.workflowEyebrow}</p>
+        <h2>{copy.pages.characters.workflowTitle}</h2>
+        <div class="workflow-grid">
+          {copy.pages.characters.workflow.map(([heading, body]) => <article class="info-card"><h3>{heading}</h3><p>{body}</p></article>)}
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-inner split">
+        <img src="/images/creator-gallery/creator-production-review.webp" alt="Production team reviewing character sheets" width="1216" height="832" loading="lazy" />
+        <div><p class="eyebrow">{copy.nav.cta}</p><h2>{copy.pages.characters.freeTitle}</h2><p class="lead">{copy.pages.characters.freeLead}</p><div class="hero-actions"><a class="primary-button" href={appHref} data-cta="character_free">{copy.nav.cta}</a></div></div>
+      </div>
+    </section>
+  </Layout>
+)}
+
+{page === "pricing" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path} image="/images/creator-gallery/creator-storyboard-desk.webp">
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.nav.pricing}</p>
+        <h1>{copy.pages.pricing.h1}</h1>
+        <p class="lead">{copy.pages.pricing.lead}</p>
+        <div class="plan-grid">
+          {copy.plans.map((plan) => <article class="plan-card"><h3>{plan.name}</h3><p><strong>{plan.price}</strong></p><p>{plan.credits}</p><p>{plan.characters}</p><p>{plan.note}</p></article>)}
+        </div>
+        <div class="hero-actions" style="margin-top: 1.5rem;"><a class="primary-button" href={appHref} data-cta="pricing_page">{copy.nav.cta}</a></div>
+      </div>
+    </section>
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.pages.pricing.included}</p>
+        <div class="quick-grid">
+          {copy.pages.pricing.includes.map(([heading, body]) => <article class="info-card"><h3>{heading}</h3><p>{body}</p></article>)}
+        </div>
+      </div>
+    </section>
+  </Layout>
+)}
+
+{page === "faq" && (
+  <Layout title={title} description={description} lang={lang} page={page} path={path} image="/images/creator-gallery/creator-kitchen-scene.webp">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonFaq)} />
+    <section class="section">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.nav.faq}</p>
+        <h1>{copy.pages.faq.h1}</h1>
+        <p class="lead">{copy.pages.faq.lead}</p>
+        <div class="faq-grid">
+          {copy.faqs.map((item) => <article class="faq-item"><h3>{item.q}</h3><p>{item.a}</p></article>)}
+        </div>
+        <div class="hero-actions" style="margin-top: 1.5rem;"><a class="primary-button" href={appHref} data-cta="faq_page">{copy.home.ctaButton}</a></div>
+      </div>
+    </section>
+  </Layout>
+)}

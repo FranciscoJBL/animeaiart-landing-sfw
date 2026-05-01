@@ -1,0 +1,27 @@
+# Creator Anime Studio
+
+Creator Anime Studio is a safe for work anime image creation site for creators, marketers, storytellers, indie game teams, and visual teams.
+
+Core pages:
+
+- Home: https://creators.anime-ai.art/
+- Gallery: https://creators.anime-ai.art/gallery/
+- Prompt examples: https://creators.anime-ai.art/prompt-examples/
+- Character consistency: https://creators.anime-ai.art/character-consistency/
+- Pricing: https://creators.anime-ai.art/pricing/
+- FAQ: https://creators.anime-ai.art/faq/
+- Spanish home: https://creators.anime-ai.art/es/
+- Japanese home: https://creators.anime-ai.art/ja/
+- Chinese home: https://creators.anime-ai.art/zh/
+
+Product facts:
+
+- Users create anime images from text prompts.
+- Free accounts can start without a credit card.
+- Images are delivered without platform watermarks on every tier.
+- Generated images may be used commercially, subject to the user's rights to their own inputs and any applicable local rules.
+- Users can save a generated image as a character reference and reuse that character in later scenes.
+- Paid tiers increase weekly credits and saved character capacity.
+
+Sitemap: https://creators.anime-ai.art/sitemap.xml
+Robots: https://creators.anime-ai.art/robots.txt

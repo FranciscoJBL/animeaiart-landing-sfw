@@ -1,0 +1,129 @@
+---
+import "../styles/global.css";
+import { APP_URL, SITE_URL } from "../data/site";
+import { getNav, localePath, t, type Lang, type PageKey } from "../data/i18n";
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  page?: PageKey;
+  path?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description,
+  lang = "en",
+  page = "home",
+  path = "/",
+  image = "/images/creator-gallery/creator-digital-mural.webp",
+} = Astro.props;
+
+const copy = t[lang];
+const nav = getNav(lang);
+const canonical = new URL(path, SITE_URL).toString();
+const socialImage = new URL(image, SITE_URL).toString();
+const appHref = `${APP_URL}/auth/signin?source=creators`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: copy.brand,
+  url: SITE_URL,
+  applicationCategory: "MultimediaApplication",
+  operatingSystem: "Web",
+  description,
+  image: socialImage,
+  offers: {
+    "@type": "AggregateOffer",
+    lowPrice: "0",
+    highPrice: "40",
+    priceCurrency: "USD",
+  },
+  featureList: [
+    copy.home.recap[0][0],
+    copy.home.recap[1][0],
+    copy.home.recap[2][0],
+    copy.home.recap[3][0],
+    copy.home.promptsTitle,
+  ],
+};
+---
+<!doctype html>
+<html lang={copy.htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="anime image generator for creators, anime art for marketing, anime character reference, anime prompt examples, commercial anime images, safe for work anime creator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={copy.brand} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content={copy.home.galleryTitle} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    {(["en", "es", "ja", "zh"] as Lang[]).map((alternateLang) => (
+      <link rel="alternate" hreflang={alternateLang} href={new URL(localePath(alternateLang, page), SITE_URL).toString()} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(localePath("en", page), SITE_URL).toString()} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-N4J3RJBS');
+    </script>
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N4J3RJBS" height="0" width="0" class="gtm-frame"></iframe></noscript>
+    <header class="site-header">
+      <a class="brand" href={localePath(lang, "home")} aria-label={`${copy.brand} home`}>
+        <span class="brand-mark"></span>
+        <span>{copy.brand}</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <a class="nav-cta" href={appHref} data-cta="header">{copy.nav.cta}</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="footer">
+      <div>
+        <a class="brand footer-brand" href={localePath(lang, "home")}>
+          <span class="brand-mark"></span>
+          <span>{copy.brand}</span>
+        </a>
+        <p>{copy.footer}</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <a class="footer-cta" href={appHref} data-cta="footer">{copy.home.ctaButton}</a>
+    </footer>
+    <script is:inline>
+      document.addEventListener('click', function (event) {
+        var target = event.target.closest('[data-cta]');
+        if (!target) return;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'creator_site_cta_click', cta_source: target.getAttribute('data-cta') });
+      });
+    </script>
+  </body>
+</html>
