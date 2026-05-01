@@ -1,6 +1,6 @@
 # Creator Anime Studio
 
-Creator Anime Studio is a creator focused anime image landing site for marketers, storytellers, indie game teams, and visual teams. The public pages use clean example images for ad review and search discovery.
+Creator Anime Studio is an anime image landing site for marketers, storytellers, indie game teams, and visual teams. The public pages use examples selected for ad review and search discovery without showcasing adult imagery.
 
 Core pages:
 

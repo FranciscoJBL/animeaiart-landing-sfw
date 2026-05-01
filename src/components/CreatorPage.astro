@@ -15,6 +15,18 @@ const path = localePath(lang, page);
 const pageMeta = page === "home" ? copy.home : copy.pages[page];
 const title = pageMeta.title;
 const description = pageMeta.description;
+const simulatorPairs = [
+  { prompt: copy.prompts[0], image: copy.images[0] },
+  { prompt: copy.prompts[1], image: copy.images[2] },
+  { prompt: copy.prompts[2], image: copy.images[7] },
+  { prompt: copy.prompts[3], image: copy.images[12] },
+];
+const outputPairs = [
+  { prompt: copy.prompts[0], image: copy.images[0] },
+  { prompt: copy.prompts[2], image: copy.images[7] },
+  { prompt: copy.prompts[4], image: copy.images[4] },
+  { prompt: copy.prompts[5], image: copy.images[11] },
+];
 const jsonFaq = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -56,10 +68,29 @@ const jsonGallery = {
             {copy.home.trust.map((item) => <span>{item}</span>)}
           </div>
         </div>
-        <div class="hero-visual" aria-label="Creator anime examples">
-          <img src="/images/creator-gallery/creator-digital-mural.webp" alt="Creator painting a digital anime mural" width="1216" height="832" loading="eager" fetchpriority="high" />
-          <img src="/images/creator-gallery/creator-mage-bridge.webp" alt="Fantasy mage casting a protective spell" width="1216" height="832" loading="eager" />
-          <img src="/images/creator-gallery/creator-production-review.webp" alt="Creators reviewing character sheets" width="1216" height="832" loading="lazy" />
+        <div class="generator-sim hero-sim" data-generator-sim data-pairs={JSON.stringify(simulatorPairs.map((pair) => ({ prompt: pair.prompt, src: pair.image.src, alt: pair.image.alt })))} data-status={copy.home.simulatorStatus}>
+          <div class="sim-toolbar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="sim-body">
+            <div class="sim-prompt">
+              <p class="sim-label">{copy.nav.prompts}</p>
+              <p class="sim-text" data-sim-text>{simulatorPairs[0].prompt}</p>
+            </div>
+            <div class="sim-status">
+              <span class="sim-pulse"></span>
+              <span data-sim-status>{copy.home.simulatorStatus}</span>
+            </div>
+            <div class="sim-output">
+              <img data-sim-image src={simulatorPairs[0].image.src} alt={simulatorPairs[0].image.alt} width="1216" height="832" loading="eager" fetchpriority="high" />
+            </div>
+            <div class="sim-footer">
+              <button class="primary-button simulator-button" type="button" data-sim-button>{copy.home.simulatorButton}</button>
+              <a class="secondary-button" href={appHref} data-cta="hero_simulator">{copy.nav.cta}</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -88,23 +119,26 @@ const jsonGallery = {
       </div>
     </section>
 
-    <section class="section alt">
+    <section class="section">
       <div class="section-inner">
-        <p class="eyebrow">{copy.home.galleryEyebrow}</p>
-        <h2>{copy.home.galleryTitle}</h2>
-        <p class="lead">{copy.home.galleryLead}</p>
-        <div class="gallery-grid">
-          {copy.images.slice(0, 9).map((image, index) => (
-            <a class:list={["gallery-card", index === 0 && "large"]} href={localePath(lang, "gallery")}>
-              <img src={image.src} alt={image.alt} width="1216" height="832" loading={index < 3 ? "eager" : "lazy"} />
-              <span>{image.categoryLabel[lang]}</span>
-            </a>
+        <p class="eyebrow">{copy.home.simulatorEyebrow}</p>
+        <h2>{copy.home.simulatorTitle}</h2>
+        <p class="lead">{copy.home.simulatorLead}</p>
+        <div class="output-grid">
+          {outputPairs.map((pair) => (
+            <article class="output-card">
+              <div class="output-prompt">
+                <p class="sim-label">{copy.nav.prompts}</p>
+                <p>{pair.prompt}</p>
+              </div>
+              <img src={pair.image.src} alt={pair.image.alt} width="1216" height="832" loading="lazy" />
+            </article>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section alt">
       <div class="section-inner split">
         <div>
           <p class="eyebrow">{copy.home.howEyebrow}</p>
@@ -120,40 +154,6 @@ const jsonGallery = {
       </div>
     </section>
 
-    <section class="section studio-section">
-      <div class="section-inner studio-grid">
-        <div>
-          <p class="eyebrow">{copy.home.simulatorEyebrow}</p>
-          <h2>{copy.home.simulatorTitle}</h2>
-          <p class="lead">{copy.home.simulatorLead}</p>
-          <div class="hero-actions">
-            <button class="primary-button simulator-button" type="button" data-sim-button>{copy.home.simulatorButton}</button>
-            <a class="secondary-button" href={appHref} data-cta="simulator">{copy.nav.cta}</a>
-          </div>
-        </div>
-        <div class="generator-sim" data-generator-sim data-prompts={JSON.stringify(copy.prompts.slice(0, 4))} data-images={JSON.stringify(copy.images.slice(0, 4).map((image) => image.src))} data-status={copy.home.simulatorStatus}>
-          <div class="sim-toolbar">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="sim-body">
-            <div class="sim-prompt">
-              <p class="sim-label">{copy.nav.prompts}</p>
-              <p class="sim-text" data-sim-text>{copy.prompts[0]}</p>
-            </div>
-            <div class="sim-status">
-              <span class="sim-pulse"></span>
-              <span data-sim-status>{copy.home.simulatorStatus}</span>
-            </div>
-            <div class="sim-output">
-              <img data-sim-image src={copy.images[0].src} alt={copy.images[0].alt} width="1216" height="832" loading="lazy" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section alt">
       <div class="section-inner split">
         <img src="/images/creator-gallery/creator-hologram-lab.webp" alt="Researchers examining a holographic map" width="1216" height="832" loading="lazy" />
@@ -165,6 +165,22 @@ const jsonGallery = {
             <a class="primary-button" href={localePath(lang, "characters")}>{copy.nav.characters}</a>
             <a class="secondary-button" href={appHref} data-cta="character">{copy.nav.cta}</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <p class="eyebrow">{copy.home.galleryEyebrow}</p>
+        <h2>{copy.home.galleryTitle}</h2>
+        <p class="lead">{copy.home.galleryLead}</p>
+        <div class="gallery-grid">
+          {copy.images.slice(0, 9).map((image, index) => (
+            <a class:list={["gallery-card", index === 0 && "large"]} href={localePath(lang, "gallery")}>
+              <img src={image.src} alt={image.alt} width="1216" height="832" loading={index < 3 ? "eager" : "lazy"} />
+              <span>{image.categoryLabel[lang]}</span>
+            </a>
+          ))}
         </div>
       </div>
     </section>
@@ -210,8 +226,7 @@ const jsonGallery = {
       (function () {
         var root = document.querySelector('[data-generator-sim]');
         if (!root) return;
-        var prompts = JSON.parse(root.getAttribute('data-prompts') || '[]');
-        var images = JSON.parse(root.getAttribute('data-images') || '[]');
+        var pairs = JSON.parse(root.getAttribute('data-pairs') || '[]');
         var statusText = root.getAttribute('data-status') || '';
         var promptEl = root.querySelector('[data-sim-text]');
         var imageEl = root.querySelector('[data-sim-image]');
@@ -232,16 +247,17 @@ const jsonGallery = {
           }, 12);
         }
         function run() {
-          if (running || !prompts.length || !images.length) return;
+          if (running || !pairs.length) return;
           running = true;
-          index = (index + 1) % prompts.length;
+          index = (index + 1) % pairs.length;
           root.classList.add('is-generating');
           statusEl.textContent = statusText;
-          typePrompt(prompts[index], function () {
+          typePrompt(pairs[index].prompt, function () {
             window.setTimeout(function () {
               imageEl.style.opacity = '0';
               window.setTimeout(function () {
-                imageEl.src = images[index % images.length];
+                imageEl.src = pairs[index].src;
+                imageEl.alt = pairs[index].alt;
                 imageEl.style.opacity = '1';
                 root.classList.remove('is-generating');
                 running = false;
