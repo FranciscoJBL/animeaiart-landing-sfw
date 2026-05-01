@@ -120,6 +120,40 @@ const jsonGallery = {
       </div>
     </section>
 
+    <section class="section studio-section">
+      <div class="section-inner studio-grid">
+        <div>
+          <p class="eyebrow">{copy.home.simulatorEyebrow}</p>
+          <h2>{copy.home.simulatorTitle}</h2>
+          <p class="lead">{copy.home.simulatorLead}</p>
+          <div class="hero-actions">
+            <button class="primary-button simulator-button" type="button" data-sim-button>{copy.home.simulatorButton}</button>
+            <a class="secondary-button" href={appHref} data-cta="simulator">{copy.nav.cta}</a>
+          </div>
+        </div>
+        <div class="generator-sim" data-generator-sim data-prompts={JSON.stringify(copy.prompts.slice(0, 4))} data-images={JSON.stringify(copy.images.slice(0, 4).map((image) => image.src))} data-status={copy.home.simulatorStatus}>
+          <div class="sim-toolbar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="sim-body">
+            <div class="sim-prompt">
+              <p class="sim-label">{copy.nav.prompts}</p>
+              <p class="sim-text" data-sim-text>{copy.prompts[0]}</p>
+            </div>
+            <div class="sim-status">
+              <span class="sim-pulse"></span>
+              <span data-sim-status>{copy.home.simulatorStatus}</span>
+            </div>
+            <div class="sim-output">
+              <img data-sim-image src={copy.images[0].src} alt={copy.images[0].alt} width="1216" height="832" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section alt">
       <div class="section-inner split">
         <img src="/images/creator-gallery/creator-hologram-lab.webp" alt="Researchers examining a holographic map" width="1216" height="832" loading="lazy" />
@@ -172,6 +206,53 @@ const jsonGallery = {
         <a class="primary-button" href={appHref} data-cta="bottom">{copy.home.ctaButton}</a>
       </div>
     </section>
+    <script is:inline>
+      (function () {
+        var root = document.querySelector('[data-generator-sim]');
+        if (!root) return;
+        var prompts = JSON.parse(root.getAttribute('data-prompts') || '[]');
+        var images = JSON.parse(root.getAttribute('data-images') || '[]');
+        var statusText = root.getAttribute('data-status') || '';
+        var promptEl = root.querySelector('[data-sim-text]');
+        var imageEl = root.querySelector('[data-sim-image]');
+        var statusEl = root.querySelector('[data-sim-status]');
+        var button = document.querySelector('[data-sim-button]');
+        var index = 0;
+        var running = false;
+        function typePrompt(text, done) {
+          var cursor = 0;
+          promptEl.textContent = '';
+          var timer = window.setInterval(function () {
+            promptEl.textContent += text.charAt(cursor);
+            cursor += 1;
+            if (cursor >= text.length) {
+              window.clearInterval(timer);
+              done();
+            }
+          }, 12);
+        }
+        function run() {
+          if (running || !prompts.length || !images.length) return;
+          running = true;
+          index = (index + 1) % prompts.length;
+          root.classList.add('is-generating');
+          statusEl.textContent = statusText;
+          typePrompt(prompts[index], function () {
+            window.setTimeout(function () {
+              imageEl.style.opacity = '0';
+              window.setTimeout(function () {
+                imageEl.src = images[index % images.length];
+                imageEl.style.opacity = '1';
+                root.classList.remove('is-generating');
+                running = false;
+              }, 240);
+            }, 420);
+          });
+        }
+        button && button.addEventListener('click', run);
+        window.setInterval(run, 5200);
+      })();
+    </script>
   </Layout>
 )}
 

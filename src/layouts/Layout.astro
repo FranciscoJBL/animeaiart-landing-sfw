@@ -60,7 +60,7 @@ const jsonLd = {
     <meta name="robots" content="index, follow" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="anime image generator for creators, anime art for marketing, anime character reference, anime prompt examples, commercial anime images, safe for work anime creator" />
+    <meta name="keywords" content="anime image generator for creators, anime art for marketing, anime character reference, anime prompt examples, commercial anime images, anime visuals for campaigns" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
@@ -78,8 +78,17 @@ const jsonLd = {
     <link rel="alternate" hreflang="x-default" href={new URL(localePath("en", page), SITE_URL).toString()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('creator-theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && prefersDark)) document.documentElement.classList.add('dark');
+        } catch (error) {}
+      })();
+    </script>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <script is:inline>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -99,7 +108,12 @@ const jsonLd = {
       <nav class="desktop-nav" aria-label="Main navigation">
         {nav.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
-      <a class="nav-cta" href={appHref} data-cta="header">{copy.nav.cta}</a>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label={copy.nav.theme} title={copy.nav.theme} data-theme-toggle>
+          <span class="theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <a class="nav-cta" href={appHref} data-cta="header">{copy.nav.cta}</a>
+      </div>
     </header>
     <main>
       <slot />
@@ -118,6 +132,14 @@ const jsonLd = {
       <a class="footer-cta" href={appHref} data-cta="footer">{copy.home.ctaButton}</a>
     </footer>
     <script is:inline>
+      (function () {
+        var toggle = document.querySelector('[data-theme-toggle]');
+        if (!toggle) return;
+        toggle.addEventListener('click', function () {
+          var isDark = document.documentElement.classList.toggle('dark');
+          try { localStorage.setItem('creator-theme', isDark ? 'dark' : 'light'); } catch (error) {}
+        });
+      })();
       document.addEventListener('click', function (event) {
         var target = event.target.closest('[data-cta]');
         if (!target) return;
@@ -127,3 +149,4 @@ const jsonLd = {
     </script>
   </body>
 </html>
+

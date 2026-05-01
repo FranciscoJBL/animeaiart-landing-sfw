@@ -1,6 +1,6 @@
 # Creator Anime Studio
 
-Creator Anime Studio is a safe for work anime image creation site for creators, marketers, storytellers, indie game teams, and visual teams.
+Creator Anime Studio is a creator focused anime image landing site for marketers, storytellers, indie game teams, and visual teams. The public pages use clean example images for ad review and search discovery.
 
 Core pages:
 
@@ -25,3 +25,4 @@ Product facts:
 
 Sitemap: https://creators.anime-ai.art/sitemap.xml
 Robots: https://creators.anime-ai.art/robots.txt
+
